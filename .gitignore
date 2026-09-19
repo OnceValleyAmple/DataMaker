@@ -1,0 +1,12 @@
+## 忽略编译生成的文件夹
+[Bb]in/
+[Oo]bj/
+
+## 忽略 VS/VSCode 配置文件和临时文件
+.vs/
+.vscode/
+.history/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
