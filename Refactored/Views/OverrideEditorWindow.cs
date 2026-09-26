@@ -182,14 +182,14 @@ public sealed class OverrideEditorWindow : Window
             return Combo(new[] { "随机树", "链", "菊花", "二叉树" }, value switch { "Random" => "随机树", "Chain" => "链", "Star" => "菊花", "Binary" => "二叉树", _ => value });
         if (field is GraphField && key == "shape")
             return Combo(new[] { "随机图", "链图", "菊花图", "二叉树", "网格图", "稀疏图", "稠密图" }, value switch { "Random" => "随机图", "Chain" => "链图", "Flower" => "菊花图", "BinaryTree" => "二叉树", "Grid" => "网格图", "Sparse" => "稀疏图", "Dense" => "稠密图", _ => value });
-        if (field is ArrayField && key == "charset")
-            return Combo(new[] { "不选", "数字", "小写字母", "大写字母", "大小写字母", "数字和大小写字母" }, value);
+        if (field is ArrayField && key == "charsetPreset")
+            return Combo(new[] { "", "Digits", "Lowercase", "Uppercase", "Letters", "DigitsAndLetters" }, value);
         if (field is StringField && key == "pattern")
             return Combo(new[] { "随机", "回文", "周期", "全部相同" }, value switch { "Random" => "随机", "Palindrome" => "回文", "Periodic" => "周期", "Same" => "全部相同", _ => value });
         if (field is ArrayField && key == "separator")
             return Combo(new[] { "空格", "换行" }, value switch { "Space" => "空格", "NewLine" => "换行", _ => value });
         if (field is ArrayField && key == "pattern")
-            return Combo(new[] { "随机", "非递减", "严格递增", "非递减", "严格递减", "全部相同" }, value switch { "Random" => "随机", "NonDecreasing" => "非递减", "StrictIncreasing" => "严格递增", "NonIncreasing" => "非递减", "StrictDecreasing" => "严格递减", "Same" => "全部相同", _ => value });
+            return Combo(new[] { "随机", "非递减", "严格递增", "非递增", "严格递减", "全部相同" }, value switch { "Random" => "随机", "NonDecreasing" => "非递减", "StrictIncreasing" => "严格递增", "NonIncreasing" => "非递增", "StrictDecreasing" => "严格递减", "Same" => "全部相同", _ => value });
         if (field is ArrayField && key == "sort")
             return Combo(new[] { "无", "升序", "降序" }, value switch { "None" => "无", "Ascending" => "升序", "Descending" => "降序", _ => value });
         if (field is ArrayField && key == "unique")
@@ -200,7 +200,8 @@ public sealed class OverrideEditorWindow : Window
 
     static ComboBox Combo(string[] items, string? selected)
     {
-        var c = new ComboBox { ItemsSource = items, SelectedItem = selected };
+        var withBlank = new[] { "" }.Concat(items).ToArray();
+        var c = new ComboBox { ItemsSource = withBlank, SelectedItem = selected ?? "" };
         if (c.SelectedIndex < 0) c.SelectedIndex = 0;
         return c;
     }
@@ -221,8 +222,8 @@ public sealed class OverrideEditorWindow : Window
         IntField => new[] { "min", "max" },
         FloatField => new[] { "min", "max", "precision" },
         StringField => new[] { "length", "minLength", "maxLength", "charset", "pattern" },
-        ArrayField a => a.ElementType == ArrayElementType.String ? new[] { "length", "stringMinLength", "stringMaxLength", "separator", "pattern", "charset" } :
-                        a.ElementType == ArrayElementType.Float ? new[] { "length", "separator", "pattern", "min", "max", "precision", "sort", "unique" } :
+        ArrayField a => a.ElementType == ArrayElementType.String ? new[] { "length", "stringMinLength", "stringMaxLength", "separator", "charsetPreset", "charset" } :
+                        a.ElementType == ArrayElementType.Float ? new[] { "length", "separator", "min", "max", "precision" } :
                         new[] { "length", "separator", "pattern", "min", "max", "sort", "unique" },
         TreeField => new[] { "nodes", "shape", "root", "weightMin", "weightMax" },
         GraphField => new[] { "nodes", "edges", "shape", "density", "weightMin", "weightMax" },
@@ -237,6 +238,7 @@ public sealed class OverrideEditorWindow : Window
         "minLength" => "最小长度",
         "maxLength" => "最大长度",
         "charset" => "自定义字符集",
+        "charsetPreset" => "字符集预设",
         "pattern" => "构造/特殊性质",
         "precision" => "精度",
         "stringMinLength" => "字符串最小长度",
