@@ -27,6 +27,13 @@ public enum TreeShape { Random, Chain, Star, Binary }
 public sealed class TreeField : FieldConfig { public string Nodes { get; set; } = "10"; public TreeShape Shape { get; set; } public int IndexStart { get; set; } = 1; public int Root { get; set; } = 1; public bool Weighted { get; set; } public string WeightMin { get; set; } = "1"; public string WeightMax { get; set; } = "100"; }
 public enum GraphSpecialType { Random, Chain, Flower, BinaryTree, Grid, Sparse, Dense }
 public sealed class GraphField : FieldConfig { public double Density { get; set; } = 0.2; public GraphSpecialType Shape { get; set; } = GraphSpecialType.Random; public int IndexStart { get; set; } = 1; public string Nodes { get; set; } = "10"; public string Edges { get; set; } = "20"; public bool Directed { get; set; } public bool Connected { get; set; } = true; public bool Dag { get; set; } public bool Bipartite { get; set; } public int LeftPartSize { get; set; } public bool AllowSelfLoops { get; set; } public bool AllowMultiEdges { get; set; } public bool Weighted { get; set; } public string WeightMin { get; set; } = "1"; public string WeightMax { get; set; } = "100"; }
+[JsonPolymorphic(TypeDiscriminatorPropertyName = "$type", UnknownDerivedTypeHandling = JsonUnknownDerivedTypeHandling.FallBackToBaseType)]
+[JsonDerivedType(typeof(IntegerFieldOverride), "int")]
+[JsonDerivedType(typeof(FloatFieldOverride), "float")]
+[JsonDerivedType(typeof(StringFieldOverride), "string")]
+[JsonDerivedType(typeof(ArrayFieldOverride), "array")]
+[JsonDerivedType(typeof(TreeFieldOverride), "tree")]
+[JsonDerivedType(typeof(GraphFieldOverride), "graph")]
 public abstract class FieldOverrideBase { public bool IsEnabled { get; set; } = true; }
 public sealed class IntegerFieldOverride : FieldOverrideBase { public string? Min { get; set; } public string? Max { get; set; } }
 public sealed class FloatFieldOverride : FieldOverrideBase { public string? Min { get; set; } public string? Max { get; set; } public int? Precision { get; set; } }
